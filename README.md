@@ -2,7 +2,7 @@
 
 A Laravel package wrapping the Customer Journey Platform sync API (`/api/v1/customers`, `/api/v1/interactions` — see `docs/api.md` in the main app's repo). Companion to the [JS/TS SDK](../customer-journey-platform/sdk) in that repo — same API, same convenience-wrapper-only scope: **no business logic, every method maps to one REST call.**
 
-Internal use only — not published to Packagist. Source: [github.com/BrandToDo/cjm-laravel-sdk](https://github.com/BrandToDo/cjm-laravel-sdk) (**private repo** — every consumer needs GitHub access to it, see Authentication below). Install it as a VCS repository.
+Not published to Packagist — source is public at [github.com/BrandToDo/cjm-laravel-sdk](https://github.com/BrandToDo/cjm-laravel-sdk). Install it as a VCS repository.
 
 ## Installation
 
@@ -24,22 +24,7 @@ composer require customer-journey-platform/laravel-sdk:^0.1
 php artisan vendor:publish --tag=platform-config
 ```
 
-### Authentication (required — the repo is private)
-
-Composer needs GitHub credentials before it can fetch a private repo, or `composer require` fails with a 404/access-denied even for someone who can see the repo fine in a browser. Two options:
-
-- **SSH** (simplest for local dev): if the consuming machine can already `git clone git@github.com:BrandToDo/cjm-laravel-sdk.git` — i.e. that machine's SSH key is added to the GitHub account/org — Composer picks it up automatically. No extra config needed.
-- **GitHub OAuth token** (needed for CI, or anyone without SSH set up): generate a [personal access token](https://github.com/settings/tokens) with `repo` scope (for a private repo, classic tokens need the full `repo` scope; a fine-grained token needs at least read access to Contents on this repo), then:
-
-  ```bash
-  composer config --global github-oauth.github.com <token>
-  ```
-
-  In CI, set `COMPOSER_AUTH` as an env var instead of writing to disk:
-
-  ```bash
-  COMPOSER_AUTH='{"github-oauth":{"github.com":"<token>"}}'
-  ```
+The repo is public, so no GitHub credentials are needed to install it — `composer require` works as-is for anyone.
 
 **Working on this SDK and the consuming app side by side on the same machine?** Swap the repository entry for a path one instead, so local edits are picked up without a push/require cycle:
 
