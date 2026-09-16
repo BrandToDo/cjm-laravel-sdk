@@ -32,7 +32,7 @@ The repo is public, so no GitHub credentials are needed to install it — `compo
 { "repositories": [{ "type": "path", "url": "../customer-journey-platform-laravel-sdk" }] }
 ```
 
-Set in `.env` — there's no production deployment yet, so `PLATFORM_BASE_URL` must always be set explicitly:
+Set in `.env` — `PLATFORM_BASE_URL` has no built-in default, so point it at whichever instance of the platform you're targeting (local dev, staging, production — whatever your team runs):
 
 ```
 PLATFORM_API_KEY=your-api-key
