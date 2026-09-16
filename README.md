@@ -2,7 +2,7 @@
 
 A Laravel package wrapping the Customer Journey Platform sync API (`/api/v1/customers`, `/api/v1/interactions` — see `docs/api.md` in the main app's repo). Companion to the [JS/TS SDK](../customer-journey-platform/sdk) in that repo — same API, same convenience-wrapper-only scope: **no business logic, every method maps to one REST call.**
 
-Internal use only — not published to Packagist. Source: [github.com/BrandToDo/cjm-laravel-sdk](https://github.com/BrandToDo/cjm-laravel-sdk). Install it as a VCS repository.
+Internal use only — not published to Packagist. Source: [github.com/BrandToDo/cjm-laravel-sdk](https://github.com/BrandToDo/cjm-laravel-sdk) (**private repo** — every consumer needs GitHub access to it, see Authentication below). Install it as a VCS repository.
 
 ## Installation
 
@@ -24,15 +24,22 @@ composer require customer-journey-platform/laravel-sdk:^0.1
 php artisan vendor:publish --tag=platform-config
 ```
 
-If the GitHub repo is private, Composer needs credentials for it — either an SSH key GitHub recognizes (works automatically if the consuming machine can already `git clone` the repo over SSH), or a [GitHub OAuth token](https://getcomposer.org/doc/articles/authentication-for-private-packages.md#github-oauth) registered via `composer config --global github-oauth.github.com <token>`.
+### Authentication (required — the repo is private)
 
-`^0.1` above assumes a `v0.1.0` tag exists. Until a tag is pushed, pin `dev-main` instead:
+Composer needs GitHub credentials before it can fetch a private repo, or `composer require` fails with a 404/access-denied even for someone who can see the repo fine in a browser. Two options:
 
-```bash
-composer require customer-journey-platform/laravel-sdk:dev-main
-```
+- **SSH** (simplest for local dev): if the consuming machine can already `git clone git@github.com:BrandToDo/cjm-laravel-sdk.git` — i.e. that machine's SSH key is added to the GitHub account/org — Composer picks it up automatically. No extra config needed.
+- **GitHub OAuth token** (needed for CI, or anyone without SSH set up): generate a [personal access token](https://github.com/settings/tokens) with `repo` scope (for a private repo, classic tokens need the full `repo` scope; a fine-grained token needs at least read access to Contents on this repo), then:
 
-Cutting a tag once the API stabilizes (`git tag v0.1.0 && git push origin v0.1.0`) is worth doing early — it lets consumers pin a version instead of tracking `main` directly, and Composer resolves tags faster than branches.
+  ```bash
+  composer config --global github-oauth.github.com <token>
+  ```
+
+  In CI, set `COMPOSER_AUTH` as an env var instead of writing to disk:
+
+  ```bash
+  COMPOSER_AUTH='{"github-oauth":{"github.com":"<token>"}}'
+  ```
 
 **Working on this SDK and the consuming app side by side on the same machine?** Swap the repository entry for a path one instead, so local edits are picked up without a push/require cycle:
 
