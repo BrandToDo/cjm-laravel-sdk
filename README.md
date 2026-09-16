@@ -2,26 +2,42 @@
 
 A Laravel package wrapping the Customer Journey Platform sync API (`/api/v1/customers`, `/api/v1/interactions` — see `docs/api.md` in the main app's repo). Companion to the [JS/TS SDK](../customer-journey-platform/sdk) in that repo — same API, same convenience-wrapper-only scope: **no business logic, every method maps to one REST call.**
 
-Internal use only — not published to Packagist. Install via a local path repository until there's a reason to publish it.
+Internal use only — not published to Packagist. Source: [github.com/BrandToDo/cjm-laravel-sdk](https://github.com/BrandToDo/cjm-laravel-sdk). Install it as a VCS repository.
 
-## Installation (internal, via path repository)
+## Installation
 
-In the Laravel app that will consume this SDK:
+In the Laravel app that will consume this SDK, add it as a VCS repository in `composer.json`:
 
 ```json
 {
     "repositories": [
-        { "type": "path", "url": "../customer-journey-platform-laravel-sdk" }
+        { "type": "vcs", "url": "https://github.com/BrandToDo/cjm-laravel-sdk.git" }
     ],
     "require": {
-        "customer-journey-platform/laravel-sdk": "*"
+        "customer-journey-platform/laravel-sdk": "^0.1"
     }
 }
 ```
 
 ```bash
-composer require customer-journey-platform/laravel-sdk:@dev
+composer require customer-journey-platform/laravel-sdk:^0.1
 php artisan vendor:publish --tag=platform-config
+```
+
+If the GitHub repo is private, Composer needs credentials for it — either an SSH key GitHub recognizes (works automatically if the consuming machine can already `git clone` the repo over SSH), or a [GitHub OAuth token](https://getcomposer.org/doc/articles/authentication-for-private-packages.md#github-oauth) registered via `composer config --global github-oauth.github.com <token>`.
+
+`^0.1` above assumes a `v0.1.0` tag exists. Until a tag is pushed, pin `dev-main` instead:
+
+```bash
+composer require customer-journey-platform/laravel-sdk:dev-main
+```
+
+Cutting a tag once the API stabilizes (`git tag v0.1.0 && git push origin v0.1.0`) is worth doing early — it lets consumers pin a version instead of tracking `main` directly, and Composer resolves tags faster than branches.
+
+**Working on this SDK and the consuming app side by side on the same machine?** Swap the repository entry for a path one instead, so local edits are picked up without a push/require cycle:
+
+```json
+{ "repositories": [{ "type": "path", "url": "../customer-journey-platform-laravel-sdk" }] }
 ```
 
 Set in `.env` — there's no production deployment yet, so `PLATFORM_BASE_URL` must always be set explicitly:
